@@ -19,8 +19,8 @@ class Application {
 	public run() {
 		// const obj = new Logger();
 		const logger = Logger.getInstance();
-		Logger.getInstance();
-		Logger.getLogger('Application run function');
+		logger.getInstance();
+		logger.getLogger('Application run function');
 	}
 }
 
