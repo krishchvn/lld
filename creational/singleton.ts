@@ -4,7 +4,7 @@ class Logger {
 	private static instance: Logger;
 
 	public static getInstance() {
-		if (Logger.instance === null) {
+		if (!Logger.instance) {
 			Logger.instance = new Logger();
 		}
 		return Logger.instance;
@@ -19,7 +19,7 @@ class Application {
 	public run() {
 		// const obj = new Logger();
 		const logger = Logger.getInstance();
-		logger.getInstance();
+		// logger.getInstance();
 		logger.getLogger('Application run function');
 	}
 }
