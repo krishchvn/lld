@@ -1,7 +1,7 @@
-// class pizza
-// class margerhita
-// class pepperoni
 // factory pattern for pizza
+// builder pattern for topping
+// singleton pattern for order
+// factory pattern for payment
 var Margerhita = /** @class */ (function () {
     function Margerhita() {
     }
@@ -30,12 +30,12 @@ var Pizza = /** @class */ (function () {
             case 'margherita':
                 var m = new Margerhita();
                 m.createPizza();
-                this.totalOrder += 'margherita';
+                this.totalOrder += ' + margherita';
                 break;
             case 'pepperoni':
                 var p = new Pepperoni();
                 p.createPizza();
-                this.totalOrder += 'pepperoni';
+                this.totalOrder += ' + pepperoni';
                 break;
             default:
                 console.log('Unknown pizza: defaulting to margherita');
@@ -46,8 +46,8 @@ var Pizza = /** @class */ (function () {
     };
     Pizza.prototype.addToppings = function () {
         var top = new Toppings.ToppingsInside()
-            .setCheese('yes')
-            .setChicken('no')
+            .setCheese('no')
+            .setChicken('yes')
             .setMushrooms('yes')
             .build();
         this.totalOrder += top.getCheese();
@@ -84,20 +84,22 @@ var Toppings = /** @class */ (function () {
     };
     Toppings.ToppingsInside = /** @class */ (function () {
         function class_1() {
-            this.cheese = 'cheese';
-            this.chickens = 'chicken';
-            this.mushrooms = 'msuhroom';
+            this.cheese = ' + cheese';
+            this.chickens = '+ chicken';
+            this.mushrooms = '+ msuhroom';
         }
         class_1.prototype.setCheese = function (choice) {
-            choice === 'yes' ? (this.cheese = 'cheese') : (this.cheese = '');
+            choice === 'yes' ? (this.cheese = ' + cheese') : (this.cheese = '');
             return this;
         };
         class_1.prototype.setChicken = function (choice) {
-            choice === 'yes' ? (this.chickens = 'chicken') : (this.chickens = '');
+            choice === 'yes' ? (this.chickens = ' + chicken') : (this.chickens = '');
             return this;
         };
         class_1.prototype.setMushrooms = function (choice) {
-            choice === 'yes' ? (this.mushrooms = 'mushrooms') : (this.mushrooms = '');
+            choice === 'yes'
+                ? (this.mushrooms = ' + mushrooms')
+                : (this.mushrooms = '');
             return this;
         };
         class_1.prototype.build = function () {
@@ -134,7 +136,7 @@ var Order = /** @class */ (function () {
     };
     Order.prototype.payForOrder = function () {
         var pay = new Payment();
-        pay.applePay();
+        pay.cash();
     };
     return Order;
 }());
@@ -202,7 +204,7 @@ var DebitCard = /** @class */ (function () {
 // call order class
 // singleton pattern like if there is already some instance of order, then okay, else create
 // client code
-var pizzaobj = new Pizza('margherita');
+var pizzaobj = new Pizza('pepperoni');
 pizzaobj.createPizza();
 pizzaobj.addToppings();
 var orderId = pizzaobj.generateOrderId();

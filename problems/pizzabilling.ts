@@ -32,12 +32,12 @@ class Pizza {
 			case 'margherita':
 				const m = new Margerhita();
 				m.createPizza();
-				this.totalOrder += 'margherita';
+				this.totalOrder += ' + margherita';
 				break;
 			case 'pepperoni':
 				const p = new Pepperoni();
 				p.createPizza();
-				this.totalOrder += 'pepperoni';
+				this.totalOrder += ' + pepperoni';
 				break;
 			default:
 				console.log('Unknown pizza: defaulting to margherita');
@@ -49,8 +49,8 @@ class Pizza {
 
 	addToppings(): void {
 		const top: any = new Toppings.ToppingsInside()
-			.setCheese('yes')
-			.setChicken('no')
+			.setCheese('no')
+			.setChicken('yes')
 			.setMushrooms('yes')
 			.build();
 
@@ -91,21 +91,23 @@ class Toppings {
 	}
 
 	static ToppingsInside = class {
-		private cheese = 'cheese';
-		private chickens = 'chicken';
-		private mushrooms = 'msuhroom';
+		private cheese = ' + cheese';
+		private chickens = '+ chicken';
+		private mushrooms = '+ msuhroom';
 		private choice: string;
 
 		public setCheese(choice: string): this {
-			choice === 'yes' ? (this.cheese = 'cheese') : (this.cheese = '');
+			choice === 'yes' ? (this.cheese = ' + cheese') : (this.cheese = '');
 			return this;
 		}
 		public setChicken(choice: string): this {
-			choice === 'yes' ? (this.chickens = 'chicken') : (this.chickens = '');
+			choice === 'yes' ? (this.chickens = ' + chicken') : (this.chickens = '');
 			return this;
 		}
 		public setMushrooms(choice: string): this {
-			choice === 'yes' ? (this.mushrooms = 'mushrooms') : (this.mushrooms = '');
+			choice === 'yes'
+				? (this.mushrooms = ' + mushrooms')
+				: (this.mushrooms = '');
 			return this;
 		}
 
@@ -149,7 +151,7 @@ class Order {
 
 	public payForOrder(): void {
 		const pay = new Payment();
-		pay.applePay();
+		pay.cash();
 	}
 }
 
@@ -210,7 +212,7 @@ class DebitCard implements payment {
 
 // client code
 
-const pizzaobj = new Pizza('margherita');
+const pizzaobj = new Pizza('pepperoni');
 pizzaobj.createPizza();
 pizzaobj.addToppings();
 const orderId = pizzaobj.generateOrderId();
