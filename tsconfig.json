@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"module": "commonjs",
+		"target": "ES6",
+		"skipLibCheck": true
+	}
+}
