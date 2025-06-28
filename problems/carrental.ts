@@ -11,10 +11,14 @@ class CarProperty {
 	public id: string = '';
 	public model: string = '';
 	public year: string = '';
-
+	allCars = AllCars.getInstance();
 	cp: CarProperties;
 	constructor(cp: CarProperties) {
 		this.cp = cp;
+	}
+
+	public onboard(cp: CarProperties): void {
+		this.allCars.addCarstoList(cp);
 	}
 }
 
@@ -52,12 +56,16 @@ class Mini implements CarProperties {
 class Borrower {
 	public name: string = '';
 	private price: PricingStrategy;
-	private allCars: AllCars;
-	public carBorrowed: CarProperties[];
+	allCars = AllCars.getInstance();
+	public carBorrowed: CarProperties[] = [];
 	prompt = require('prompt-sync')();
 
 	constructor(name: string) {
 		this.name = name;
+	}
+
+	public setTicket() {
+		this.price = new PricingStrategy();
 	}
 
 	public borrowCar(carP: CarProperties) {
@@ -81,7 +89,6 @@ class Borrower {
 class AllCars {
 	public carsList: CarProperties[] = [];
 	public static allCars: AllCars;
-
 	private constructor() {}
 
 	public static getInstance() {
@@ -94,6 +101,11 @@ class AllCars {
 	public availableCars(): void {
 		console.log(this.carsList);
 	}
+
+	public addCarstoList(cp: CarProperties): void {
+		console.log(this.carsList, '2');
+		this.carsList.push(cp);
+	}
 }
 
 interface Price {
@@ -101,8 +113,8 @@ interface Price {
 }
 
 class PricingStrategy {
-	public entryTimestamp: number;
-	public exitTimestamp: number;
+	public entryTimestamp: number = 0;
+	public exitTimestamp: number = 0;
 	price: Price;
 
 	public calculatePrice(
@@ -138,11 +150,14 @@ const car1 = new CarProperty(new SUV('12345', 'Toyota 4Runner', '2018'));
 const car2 = new CarProperty(new Sedan('23456', 'Camry', '2019'));
 const car3 = new CarProperty(new Mini('34567', 'Mini Cooper', '2015'));
 
-const borrower1 = new Borrower('ABC');
-
 const cars = AllCars.getInstance();
 cars.availableCars();
+car1.onboard(car1);
+car2.onboard(car2);
+car3.onboard(car3);
 
+const borrower1 = new Borrower('ABC');
+borrower1.setTicket();
 borrower1.borrowCar(car2);
 
 borrower1.returnCar(car2);
