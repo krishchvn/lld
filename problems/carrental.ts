@@ -1,10 +1,8 @@
-// you are not adding anything to carsList
-// make an observer pattern that qwhenever a new object of CarProperty is created, add it to carsList
-
 interface CarProperties {
 	id: string;
 	model: string;
 	year: string;
+	getPricingStategy(): Price;
 }
 
 class CarProperty {
@@ -31,6 +29,9 @@ class SUV implements CarProperties {
 		this.model = model;
 		this.year = year;
 	}
+	public getPricingStategy(): Price {
+		return new SUVPrice();
+	}
 }
 class Sedan implements CarProperties {
 	public id: string = '';
@@ -40,6 +41,9 @@ class Sedan implements CarProperties {
 		this.id = id;
 		this.model = model;
 		this.year = year;
+	}
+	public getPricingStategy(): Price {
+		return new SedanPrice();
 	}
 }
 class Mini implements CarProperties {
@@ -51,13 +55,16 @@ class Mini implements CarProperties {
 		this.model = model;
 		this.year = year;
 	}
+	public getPricingStategy(): Price {
+		return new MiniPrice();
+	}
 }
 
 class Borrower {
 	public name: string = '';
 	private price: PricingStrategy;
 	allCars = AllCars.getInstance();
-	public carBorrowed: CarProperties[] = [];
+	public carBorrowed: CarProperties;
 	prompt = require('prompt-sync')();
 
 	constructor(name: string) {
@@ -69,8 +76,12 @@ class Borrower {
 	}
 
 	public borrowCar(carP: CarProperties) {
-		this.carBorrowed = this.allCars.carsList.filter(
+		this.carBorrowed = this.allCars.carsList.find(
 			car => car.model === carP.model
+		);
+		console.log(this.carBorrowed);
+		this.allCars.carsList = this.allCars.carsList.filter(
+			car => car.model !== this.carBorrowed.model
 		);
 		this.price.entryTimestamp = Date.now();
 	}
@@ -81,7 +92,7 @@ class Borrower {
 		this.price.calculatePrice(
 			this.price.entryTimestamp,
 			this.price.exitTimestamp,
-			new SedanPrice()
+			carP.getPricingStategy()
 		);
 	}
 }
@@ -103,7 +114,6 @@ class AllCars {
 	}
 
 	public addCarstoList(cp: CarProperties): void {
-		console.log(this.carsList, '2');
 		this.carsList.push(cp);
 	}
 }
@@ -121,11 +131,13 @@ class PricingStrategy {
 		entryTimestamp: number,
 		exitTimestamp: number,
 		price: Price
-	): number {
+	): void {
 		let basePrice: number = price.getBasePrice();
-		return exitTimestamp - entryTimestamp > 86400
-			? basePrice + (exitTimestamp - entryTimestamp - 86400)
-			: basePrice;
+		console.log(
+			exitTimestamp - entryTimestamp > 86400
+				? basePrice + (exitTimestamp - entryTimestamp - 86400)
+				: basePrice
+		);
 	}
 }
 
@@ -149,15 +161,25 @@ class MiniPrice implements Price {
 const car1 = new CarProperty(new SUV('12345', 'Toyota 4Runner', '2018'));
 const car2 = new CarProperty(new Sedan('23456', 'Camry', '2019'));
 const car3 = new CarProperty(new Mini('34567', 'Mini Cooper', '2015'));
+const car4 = new CarProperty(new Sedan('45678', 'Camaro', '2022'));
 
 const cars = AllCars.getInstance();
+
+car1.onboard(car1.cp);
+car2.onboard(car2.cp);
+car3.onboard(car3.cp);
+car4.onboard(car4.cp);
+
 cars.availableCars();
-car1.onboard(car1);
-car2.onboard(car2);
-car3.onboard(car3);
 
 const borrower1 = new Borrower('ABC');
 borrower1.setTicket();
-borrower1.borrowCar(car2);
+borrower1.borrowCar(car2.cp);
+cars.availableCars();
+borrower1.returnCar(car2.cp);
 
-borrower1.returnCar(car2);
+const borrower2 = new Borrower('ABC');
+borrower2.setTicket();
+borrower1.borrowCar(car3.cp);
+borrower1.returnCar(car3.cp);
+cars.availableCars();
