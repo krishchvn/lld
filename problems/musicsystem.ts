@@ -1,3 +1,6 @@
+// designed as per question
+// https://medium.com/@shubham18p2/adobe-interview-lld-designing-a-carvaan-style-music-player-in-java-12ea87537fef
+
 class Song {
 	id: string;
 	name: string;
@@ -56,12 +59,18 @@ class MusicPlayer {
 
 interface PlayBackMode {
 	musicPlayer: MusicPlayer;
+	fixedPlaylist: FixedPlaylist;
 	getNextSong(song: Song);
+	setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer);
 }
 
 class Sequential implements PlayBackMode {
 	musicPlayer: MusicPlayer;
 	fixedPlaylist: FixedPlaylist;
+	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+		this.fixedPlaylist = fixedPlaylist;
+		this.musicPlayer = musicPlayer;
+	}
 
 	public getNextSong(song: Song) {
 		let idx = this.fixedPlaylist.getIndexOfSong(song);
@@ -76,6 +85,11 @@ class Sequential implements PlayBackMode {
 class Loop implements PlayBackMode {
 	musicPlayer: MusicPlayer;
 	fixedPlaylist: FixedPlaylist;
+
+	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+		this.fixedPlaylist = fixedPlaylist;
+		this.musicPlayer = musicPlayer;
+	}
 	public getNextSong(song: Song) {
 		let currentIdx = this.fixedPlaylist.getIndexOfSong(song);
 		this.musicPlayer.play(this.fixedPlaylist.songs[currentIdx]);
@@ -87,6 +101,11 @@ class Shuffled implements PlayBackMode {
 	fixedPlaylist: FixedPlaylist;
 
 	songsPlayed = new Set<number>();
+
+	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+		this.fixedPlaylist = fixedPlaylist;
+		this.musicPlayer = musicPlayer;
+	}
 
 	public getNextSong(song: Song) {
 		let size = this.fixedPlaylist.getSizeOfPlaylist();
@@ -139,5 +158,17 @@ const seqMusicPlayer = new MusicPlayer();
 seqMusicPlayer.play(song2);
 seqMusicPlayer.pause(song2);
 seqMusicPlayer.stop(song2);
-
+shuffled.setMode(playlist1, seqMusicPlayer);
 seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+
+seq.setMode(playlist1, seqMusicPlayer);
+seq.getNextSong(song4);
+
+loop.setMode(playlist1, seqMusicPlayer);
+loop.getNextSong(song4);

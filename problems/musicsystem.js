@@ -50,6 +50,10 @@ var MusicPlayer = /** @class */ (function () {
 var Sequential = /** @class */ (function () {
     function Sequential() {
     }
+    Sequential.prototype.setMode = function (fixedPlaylist, musicPlayer) {
+        this.fixedPlaylist = fixedPlaylist;
+        this.musicPlayer = musicPlayer;
+    };
     Sequential.prototype.getNextSong = function (song) {
         var idx = this.fixedPlaylist.getIndexOfSong(song);
         var size = this.fixedPlaylist.getSizeOfPlaylist();
@@ -63,6 +67,10 @@ var Sequential = /** @class */ (function () {
 var Loop = /** @class */ (function () {
     function Loop() {
     }
+    Loop.prototype.setMode = function (fixedPlaylist, musicPlayer) {
+        this.fixedPlaylist = fixedPlaylist;
+        this.musicPlayer = musicPlayer;
+    };
     Loop.prototype.getNextSong = function (song) {
         var currentIdx = this.fixedPlaylist.getIndexOfSong(song);
         this.musicPlayer.play(this.fixedPlaylist.songs[currentIdx]);
@@ -73,6 +81,10 @@ var Shuffled = /** @class */ (function () {
     function Shuffled() {
         this.songsPlayed = new Set();
     }
+    Shuffled.prototype.setMode = function (fixedPlaylist, musicPlayer) {
+        this.fixedPlaylist = fixedPlaylist;
+        this.musicPlayer = musicPlayer;
+    };
     Shuffled.prototype.getNextSong = function (song) {
         var size = this.fixedPlaylist.getSizeOfPlaylist();
         var currentIdx = this.fixedPlaylist.getIndexOfSong(song);
@@ -115,4 +127,15 @@ var seqMusicPlayer = new MusicPlayer();
 seqMusicPlayer.play(song2);
 seqMusicPlayer.pause(song2);
 seqMusicPlayer.stop(song2);
+shuffled.setMode(playlist1, seqMusicPlayer);
 seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+seqMusicPlayer.playNext(song2, shuffled);
+// seq.setMode(playlist1, seqMusicPlayer);
+// seq.getNextSong(song4);
+// loop.setMode(playlist1, seqMusicPlayer);
+// loop.getNextSong(song4);
