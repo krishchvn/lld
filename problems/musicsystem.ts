@@ -26,7 +26,7 @@ class FixedPlaylist {
 		return this.songs.length;
 	}
 	public getIndexOfSong(song: Song): number {
-		return this.songs.findIndex(s => s.id === song.id);
+		return this.songs.findIndex(s => s.id === song.id) || -1;
 	}
 	public getPlaylist(): void {
 		console.log(this.songs);
@@ -34,12 +34,12 @@ class FixedPlaylist {
 }
 
 class MusicPlayer {
-	// playBackMode: PlayBackMode;
+	playBackMode: PlayBackMode;
 	fixedPlaylist: FixedPlaylist;
 
-	// constructor(playBackMode: PlayBackMode) {
-	// 	this.playBackMode = playBackMode;
-	// }
+	setMode(playBackMode: PlayBackMode) {
+		this.playBackMode = playBackMode;
+	}
 
 	public play(song: Song) {
 		console.log(song.name + ' is playing now');
@@ -50,8 +50,8 @@ class MusicPlayer {
 	public stop(song: Song) {
 		console.log(song.name + ' is stopping now');
 	}
-	public playNext(song: Song, playBackMode: PlayBackMode) {
-		playBackMode.getNextSong(song);
+	public playNext(song: Song) {
+		this.playBackMode.getNextSong(song);
 	}
 }
 
@@ -61,13 +61,14 @@ interface PlayBackMode {
 	musicPlayer: MusicPlayer;
 	fixedPlaylist: FixedPlaylist;
 	getNextSong(song: Song);
-	setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer);
+	// setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer);
 }
 
 class Sequential implements PlayBackMode {
 	musicPlayer: MusicPlayer;
 	fixedPlaylist: FixedPlaylist;
-	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+
+	public constructor(musicPlayer: MusicPlayer, fixedPlaylist: FixedPlaylist) {
 		this.fixedPlaylist = fixedPlaylist;
 		this.musicPlayer = musicPlayer;
 	}
@@ -86,10 +87,11 @@ class Loop implements PlayBackMode {
 	musicPlayer: MusicPlayer;
 	fixedPlaylist: FixedPlaylist;
 
-	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+	public constructor(musicPlayer: MusicPlayer, fixedPlaylist: FixedPlaylist) {
 		this.fixedPlaylist = fixedPlaylist;
 		this.musicPlayer = musicPlayer;
 	}
+
 	public getNextSong(song: Song) {
 		let currentIdx = this.fixedPlaylist.getIndexOfSong(song);
 		this.musicPlayer.play(this.fixedPlaylist.songs[currentIdx]);
@@ -101,8 +103,7 @@ class Shuffled implements PlayBackMode {
 	fixedPlaylist: FixedPlaylist;
 
 	songsPlayed = new Set<number>();
-
-	public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+	public constructor(musicPlayer: MusicPlayer, fixedPlaylist: FixedPlaylist) {
 		this.fixedPlaylist = fixedPlaylist;
 		this.musicPlayer = musicPlayer;
 	}
@@ -114,8 +115,11 @@ class Shuffled implements PlayBackMode {
 		this.songsPlayed.add(currentIdx);
 
 		let randomIdx = Math.floor(Math.random() * size);
-		while (this.songsPlayed.has(idx)) {
+		while (this.songsPlayed.has(randomIdx)) {
 			randomIdx = Math.floor(Math.random() * size);
+			if (this.songsPlayed.size === this.fixedPlaylist.getSizeOfPlaylist()) {
+				break;
+			}
 		}
 		this.musicPlayer.play(this.fixedPlaylist.songs[randomIdx]);
 	}
@@ -150,25 +154,27 @@ console.log(playListSize, 'playLstSize');
 let idx = playlist1.getIndexOfSong(song1);
 idx !== -1 ? console.log(idx) : console.log('Song not found');
 
-const seq = new Sequential();
-const loop = new Loop();
-const shuffled = new Shuffled();
-
 const seqMusicPlayer = new MusicPlayer();
+
+const seq = new Sequential(seqMusicPlayer, playlist1);
+const loop = new Loop(seqMusicPlayer, playlist1);
+const shuffled = new Shuffled(seqMusicPlayer, playlist1);
+
 seqMusicPlayer.play(song2);
 seqMusicPlayer.pause(song2);
 seqMusicPlayer.stop(song2);
-shuffled.setMode(playlist1, seqMusicPlayer);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
 
-seq.setMode(playlist1, seqMusicPlayer);
+seqMusicPlayer.setMode(shuffled);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+
+seqMusicPlayer.setMode(seq);
 seq.getNextSong(song4);
 
-loop.setMode(playlist1, seqMusicPlayer);
+seqMusicPlayer.setMode(loop);
 loop.getNextSong(song4);

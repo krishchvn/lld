@@ -49,9 +49,9 @@ class Pizza {
 
 	addToppings(): void {
 		const top: any = new Toppings.ToppingsInside()
-			.setCheese('no')
+			.setCheese('yes')
 			.setChicken('yes')
-			.setMushrooms('yes')
+			.setMushrooms('no')
 			.build();
 
 		this.totalOrder += top.getCheese();

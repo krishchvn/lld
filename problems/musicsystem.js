@@ -1,3 +1,5 @@
+// designed as per question
+// https://medium.com/@shubham18p2/adobe-interview-lld-designing-a-carvaan-style-music-player-in-java-12ea87537fef
 var Song = /** @class */ (function () {
     function Song(id, name, artist) {
         this.id = id;
@@ -33,6 +35,9 @@ var MusicPlayer = /** @class */ (function () {
     // constructor(playBackMode: PlayBackMode) {
     // 	this.playBackMode = playBackMode;
     // }
+    MusicPlayer.prototype.setMode = function (playBackMode) {
+        this.playBackMode = playBackMode;
+    };
     MusicPlayer.prototype.play = function (song) {
         console.log(song.name + ' is playing now');
     };
@@ -42,18 +47,20 @@ var MusicPlayer = /** @class */ (function () {
     MusicPlayer.prototype.stop = function (song) {
         console.log(song.name + ' is stopping now');
     };
-    MusicPlayer.prototype.playNext = function (song, playBackMode) {
-        playBackMode.getNextSong(song);
+    MusicPlayer.prototype.playNext = function (song) {
+        this.playBackMode.getNextSong(song);
     };
     return MusicPlayer;
 }());
 var Sequential = /** @class */ (function () {
-    function Sequential() {
-    }
-    Sequential.prototype.setMode = function (fixedPlaylist, musicPlayer) {
+    function Sequential(musicPlayer, fixedPlaylist) {
         this.fixedPlaylist = fixedPlaylist;
         this.musicPlayer = musicPlayer;
-    };
+    }
+    // public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+    // 	this.fixedPlaylist = fixedPlaylist;
+    // 	this.musicPlayer = musicPlayer;
+    // }
     Sequential.prototype.getNextSong = function (song) {
         var idx = this.fixedPlaylist.getIndexOfSong(song);
         var size = this.fixedPlaylist.getSizeOfPlaylist();
@@ -65,12 +72,14 @@ var Sequential = /** @class */ (function () {
     return Sequential;
 }());
 var Loop = /** @class */ (function () {
-    function Loop() {
-    }
-    Loop.prototype.setMode = function (fixedPlaylist, musicPlayer) {
+    function Loop(musicPlayer, fixedPlaylist) {
         this.fixedPlaylist = fixedPlaylist;
         this.musicPlayer = musicPlayer;
-    };
+    }
+    // public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+    // 	this.fixedPlaylist = fixedPlaylist;
+    // 	this.musicPlayer = musicPlayer;
+    // }
     Loop.prototype.getNextSong = function (song) {
         var currentIdx = this.fixedPlaylist.getIndexOfSong(song);
         this.musicPlayer.play(this.fixedPlaylist.songs[currentIdx]);
@@ -78,19 +87,21 @@ var Loop = /** @class */ (function () {
     return Loop;
 }());
 var Shuffled = /** @class */ (function () {
-    function Shuffled() {
+    function Shuffled(musicPlayer, fixedPlaylist) {
         this.songsPlayed = new Set();
-    }
-    Shuffled.prototype.setMode = function (fixedPlaylist, musicPlayer) {
         this.fixedPlaylist = fixedPlaylist;
         this.musicPlayer = musicPlayer;
-    };
+    }
+    // public setMode(fixedPlaylist: FixedPlaylist, musicPlayer: MusicPlayer) {
+    // 	this.fixedPlaylist = fixedPlaylist;
+    // 	this.musicPlayer = musicPlayer;
+    // }
     Shuffled.prototype.getNextSong = function (song) {
         var size = this.fixedPlaylist.getSizeOfPlaylist();
         var currentIdx = this.fixedPlaylist.getIndexOfSong(song);
         this.songsPlayed.add(currentIdx);
         var randomIdx = Math.floor(Math.random() * size);
-        while (this.songsPlayed.has(idx)) {
+        while (this.songsPlayed.has(randomIdx)) {
             randomIdx = Math.floor(Math.random() * size);
         }
         this.musicPlayer.play(this.fixedPlaylist.songs[randomIdx]);
@@ -120,22 +131,26 @@ var playListSize = playlist1.getSizeOfPlaylist();
 console.log(playListSize, 'playLstSize');
 var idx = playlist1.getIndexOfSong(song1);
 idx !== -1 ? console.log(idx) : console.log('Song not found');
-var seq = new Sequential();
-var loop = new Loop();
-var shuffled = new Shuffled();
 var seqMusicPlayer = new MusicPlayer();
+var seq = new Sequential(seqMusicPlayer, playlist1);
+var loop = new Loop(seqMusicPlayer, playlist1);
+var shuffled = new Shuffled(seqMusicPlayer, playlist1);
 seqMusicPlayer.play(song2);
 seqMusicPlayer.pause(song2);
 seqMusicPlayer.stop(song2);
-shuffled.setMode(playlist1, seqMusicPlayer);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-seqMusicPlayer.playNext(song2, shuffled);
-// seq.setMode(playlist1, seqMusicPlayer);
-// seq.getNextSong(song4);
+// shuffled.setMode(playlist1, seqMusicPlayer);
 // loop.setMode(playlist1, seqMusicPlayer);
-// loop.getNextSong(song4);
+seqMusicPlayer.setMode(shuffled);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+seqMusicPlayer.playNext(song2);
+// seq.setMode(playlist1, seqMusicPlayer);
+seqMusicPlayer.setMode(seq);
+seq.getNextSong(song4);
+// loop.setMode(playlist1, seqMusicPlayer);
+seqMusicPlayer.setMode(loop);
+loop.getNextSong(song4);

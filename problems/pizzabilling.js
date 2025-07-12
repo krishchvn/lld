@@ -46,7 +46,7 @@ var Pizza = /** @class */ (function () {
     };
     Pizza.prototype.addToppings = function () {
         var top = new Toppings.ToppingsInside()
-            .setCheese('no')
+            .setCheese('yes')
             .setChicken('yes')
             .setMushrooms('yes')
             .build();
