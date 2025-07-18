@@ -32,7 +32,7 @@ var FetchData = /** @class */ (function () {
         ];
     };
     FetchData.prototype.getData = function () {
-        return this.data;
+        return this.data || undefined;
     };
     return FetchData;
 }());
@@ -44,12 +44,17 @@ var TDR = /** @class */ (function () {
         var deliveredOnPromisedDate = 0;
         var totalDeliveries = 0;
         var data = this.dp.getData();
-        for (var i = 0; i < data.length; i++) {
-            var obj = data[i];
-            if (obj.deliveryDate === obj.actualDeliveryDate) {
-                deliveredOnPromisedDate += 1;
+        if (data !== undefined) {
+            for (var i = 0; i < data.length; i++) {
+                var obj = data[i];
+                if (obj.deliveryDate === obj.actualDeliveryDate) {
+                    deliveredOnPromisedDate += 1;
+                }
+                totalDeliveries += 1;
             }
-            totalDeliveries += 1;
+        }
+        else {
+            console.log('Data not present, check api call');
         }
         return deliveredOnPromisedDate / totalDeliveries;
     };
@@ -64,13 +69,18 @@ var OHDR = /** @class */ (function () {
         var deliveriesNotOnBusinessHours = 0;
         var totalDeliveries = 0;
         var data = this.dp.getData();
-        for (var i = 0; i < data.length; i++) {
-            var obj = data[i];
-            hh = obj.actualDeliveryTime.split(':');
-            if (Number(hh[0]) < 9 || Number(hh[0]) > 17) {
-                deliveriesNotOnBusinessHours += 1;
+        if (data !== undefined) {
+            for (var i = 0; i < data.length; i++) {
+                var obj = data[i];
+                hh = obj.actualDeliveryTime.split(':');
+                if (Number(hh[0]) < 9 || Number(hh[0]) > 17) {
+                    deliveriesNotOnBusinessHours += 1;
+                }
+                totalDeliveries += 1;
             }
-            totalDeliveries += 1;
+        }
+        else {
+            console.log('Data not present, check api call');
         }
         return (totalDeliveries - deliveriesNotOnBusinessHours) / totalDeliveries;
     };

@@ -61,7 +61,7 @@ class FetchData implements DataProvider {
 	}
 
 	public getData(): orderDetails[] {
-		return this.data;
+		return this.data || undefined;
 	}
 }
 
@@ -80,14 +80,17 @@ class TDR implements MetricsInterface {
 		let deliveredOnPromisedDate: number = 0;
 		let totalDeliveries: number = 0;
 		let data = this.dp.getData();
+		if (data !== undefined) {
+			for (let i = 0; i < data.length; i++) {
+				let obj = data[i];
 
-		for (let i = 0; i < data.length; i++) {
-			let obj = data[i];
-
-			if (obj.deliveryDate === obj.actualDeliveryDate) {
-				deliveredOnPromisedDate += 1;
+				if (obj.deliveryDate === obj.actualDeliveryDate) {
+					deliveredOnPromisedDate += 1;
+				}
+				totalDeliveries += 1;
 			}
-			totalDeliveries += 1;
+		} else {
+			console.log('Data not present, check api call');
 		}
 
 		return deliveredOnPromisedDate / totalDeliveries;
@@ -107,13 +110,17 @@ class OHDR implements MetricsInterface {
 		let totalDeliveries = 0;
 		let data = this.dp.getData();
 
-		for (let i = 0; i < data.length; i++) {
-			let obj = data[i];
-			hh = obj.actualDeliveryTime.split(':');
-			if (Number(hh[0]) < 9 || Number(hh[0]) > 17) {
-				deliveriesNotOnBusinessHours += 1;
+		if (data !== undefined) {
+			for (let i = 0; i < data.length; i++) {
+				let obj = data[i];
+				hh = obj.actualDeliveryTime.split(':');
+				if (Number(hh[0]) < 9 || Number(hh[0]) > 17) {
+					deliveriesNotOnBusinessHours += 1;
+				}
+				totalDeliveries += 1;
 			}
-			totalDeliveries += 1;
+		} else {
+			console.log('Data not present, check api call');
 		}
 
 		return (totalDeliveries - deliveriesNotOnBusinessHours) / totalDeliveries;
