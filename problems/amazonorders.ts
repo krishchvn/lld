@@ -15,3 +15,133 @@
 // promised delivery Date
 // *Open-Hour-Delivery-Rate (OHDR) measures the fraction of total orders that were delivered
 // during open business hours (Mon-Fri, 9am-5pm)
+
+interface orderDetails {
+	orderId: string;
+	typeOfCustomer: 'business' | 'personal';
+	deliveryDate: string;
+	deliveryTime: string;
+	deliveryDay: string;
+	actualDeliveryDate: string;
+	actualDeliveryTime: string;
+	actualDeliveryDay: string;
+}
+
+interface DataProvider {
+	getData(): orderDetails[];
+}
+
+class FetchData implements DataProvider {
+	public data: orderDetails[];
+
+	public callAPI(): void {
+		console.log('Calling API to fill data');
+		this.data = [
+			{
+				orderId: 'abc123',
+				typeOfCustomer: 'business',
+				deliveryDate: '24-12-1293',
+				deliveryTime: '9am-5pm',
+				deliveryDay: 'Wednesday',
+				actualDeliveryDate: '24-12-1293',
+				actualDeliveryTime: '13:05:34',
+				actualDeliveryDay: 'Thursday',
+			},
+			{
+				orderId: 'bvuv67',
+				typeOfCustomer: 'personal',
+				deliveryDate: '24-12-1293',
+				deliveryTime: '9am-5pm',
+				deliveryDay: 'Wednesday',
+				actualDeliveryDate: '25-12-1293',
+				actualDeliveryTime: '13:05:34',
+				actualDeliveryDay: 'Thursday',
+			},
+		];
+	}
+
+	public getData(): orderDetails[] {
+		return this.data;
+	}
+}
+
+// strategy pattern
+interface MetricsInterface {
+	compute(): void;
+}
+
+class TDR implements MetricsInterface {
+	dp: DataProvider;
+	public constructor(dp: DataProvider) {
+		this.dp = dp;
+	}
+
+	public compute(): number {
+		let deliveredOnPromisedDate: number = 0;
+		let totalDeliveries: number = 0;
+		let data = this.dp.getData();
+
+		for (let i = 0; i < data.length; i++) {
+			let obj = data[i];
+
+			if (obj.deliveryDate === obj.actualDeliveryDate) {
+				deliveredOnPromisedDate += 1;
+			}
+			totalDeliveries += 1;
+		}
+
+		return deliveredOnPromisedDate / totalDeliveries;
+	}
+}
+
+class OHDR implements MetricsInterface {
+	dp: DataProvider;
+
+	public constructor(dp: DataProvider) {
+		this.dp = dp;
+	}
+
+	public compute(): number {
+		let hh = [];
+		let deliveriesNotOnBusinessHours = 0;
+		let totalDeliveries = 0;
+		let data = this.dp.getData();
+
+		for (let i = 0; i < data.length; i++) {
+			let obj = data[i];
+			hh = obj.actualDeliveryTime.split(':');
+			if (Number(hh[0]) < 9 || Number(hh[0]) > 17) {
+				deliveriesNotOnBusinessHours += 1;
+			}
+			totalDeliveries += 1;
+		}
+
+		return (totalDeliveries - deliveriesNotOnBusinessHours) / totalDeliveries;
+	}
+}
+
+class MetricsManager {
+	mI: MetricsInterface;
+	public constructor(mI: MetricsInterface) {
+		this.mI = mI;
+	}
+
+	public setManager(mI: MetricsInterface) {
+		this.mI = mI;
+	}
+
+	public computeMetrics() {
+		let results = this.mI.compute();
+		console.log(results);
+	}
+}
+
+const fD = new FetchData();
+fD.callAPI();
+const mM = new MetricsManager(new TDR(fD));
+mM.computeMetrics();
+
+mM.setManager(new OHDR(fD));
+mM.computeMetrics();
+
+// mM.set(new ODHR());
