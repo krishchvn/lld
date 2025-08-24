@@ -2,26 +2,26 @@ interface Payment {
 	processPayment(): void;
 }
 
-class CreditCard implements Payment {
+class CreditCard1 implements Payment {
 	public processPayment(): void {
 		console.log('Credit card payment processing');
 	}
 }
 
-class Cash implements Payment {
+class Cash1 implements Payment {
 	public processPayment(): void {
 		console.log('Cash payment processing');
 	}
 }
 
-class ApplePay implements Payment {
+class ApplePay1 implements Payment {
 	public processPayment(): void {
 		console.log('Apple Pay payment processing');
 	}
 }
 
 class PaymentProcesser {
-	public payment: Payment;
+	private payment: Payment;
 
 	public constructor(payment: Payment) {
 		this.payment = payment;
@@ -37,12 +37,12 @@ class PaymentProcesser {
 }
 
 // client code
-const pay = new PaymentProcesser(new CreditCard());
+const pay = new PaymentProcesser(new CreditCard1());
 pay.processPayment();
 
-const pay1 = new PaymentProcesser(new ApplePay());
+const pay1 = new PaymentProcesser(new ApplePay1());
 pay1.processPayment();
-pay1.setPayment(new Cash());
+pay1.setPayment(new Cash1());
 pay1.processPayment();
 
 // from what i understood

@@ -2,8 +2,12 @@ abstract class Vehicles {
 	public move() {
 		console.log('move');
 	}
-	public chainRotate() {}
-	public sparkPlug() {}
+	public chainRotate() {
+		console.log('Chain Rotate');
+	}
+	public sparkPlug() {
+		console.log('Spark Plug');
+	}
 }
 
 abstract class EngineVehicle extends Vehicles {
@@ -18,19 +22,19 @@ abstract class NonEngineVehicle extends Vehicles {
 	}
 }
 
-class Car extends EngineVehicle {
-	public override sparkPlug() {
+class Car2 extends EngineVehicle {
+	public sparkPlug() {
 		console.log('Car need spark plugs');
 	}
 }
 
 class Bicyle extends NonEngineVehicle {
-	public override chainRotate(): void {
+	public chainRotate(): void {
 		console.log('Fix bicycle chain');
 	}
 }
 
-const obj1 = new Car();
+const obj1 = new Car2();
 obj1.move();
 obj1.sparkPlug();
 

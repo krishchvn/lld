@@ -58,8 +58,9 @@ class UpdateInventory implements InventoryService {
 }
 
 // High level module
-class Order {
-	// write something here, so that these functions will be dependent on interfaces and those interfaces will call classes
+class Order2 {
+	// write something here, so that these functions will be dependent on interfaces
+	// and those interfaces will call classes
 	private emailService: NotificationService;
 	private textService: NotificationService;
 	private databaseLoggerService: LoggingService;
@@ -85,7 +86,7 @@ class Order {
 	}
 }
 
-const orderService = new Order();
+const orderService = new Order2();
 orderService.generateService();
 orderService.placeOrder();
 

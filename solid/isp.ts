@@ -1,9 +1,9 @@
 interface Print {
-	print: () => void;
+	print(): void;
 }
 
 interface Scan {
-	scan: () => void;
+	scan(): void;
 }
 
 interface Fax {

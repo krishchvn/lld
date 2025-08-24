@@ -19,8 +19,12 @@ var Vehicles = /** @class */ (function () {
     Vehicles.prototype.move = function () {
         console.log('move');
     };
-    Vehicles.prototype.chainRotate = function () { };
-    Vehicles.prototype.sparkPlug = function () { };
+    Vehicles.prototype.chainRotate = function () {
+        console.log('Chain Rotate');
+    };
+    Vehicles.prototype.sparkPlug = function () {
+        console.log('Spark Plug');
+    };
     return Vehicles;
 }());
 var EngineVehicle = /** @class */ (function (_super) {
@@ -43,15 +47,15 @@ var NonEngineVehicle = /** @class */ (function (_super) {
     };
     return NonEngineVehicle;
 }(Vehicles));
-var Car = /** @class */ (function (_super) {
-    __extends(Car, _super);
-    function Car() {
+var Car2 = /** @class */ (function (_super) {
+    __extends(Car2, _super);
+    function Car2() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Car.prototype.sparkPlug = function () {
+    Car2.prototype.sparkPlug = function () {
         console.log('Car need spark plugs');
     };
-    return Car;
+    return Car2;
 }(EngineVehicle));
 var Bicyle = /** @class */ (function (_super) {
     __extends(Bicyle, _super);
@@ -63,7 +67,7 @@ var Bicyle = /** @class */ (function (_super) {
     };
     return Bicyle;
 }(NonEngineVehicle));
-var obj1 = new Car();
+var obj1 = new Car2();
 obj1.move();
 obj1.sparkPlug();
 var obj2 = new Bicyle();
