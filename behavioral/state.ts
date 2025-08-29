@@ -13,7 +13,7 @@ class Red implements TrafficLightState {
 
 	public next(tL: TrafficLight): void {
 		console.log('Red -> Green');
-		tl.setState(new Green(tl));
+		tL.setState(new Green(this.tL));
 	}
 	public getColor(): void {
 		console.log('Red');
@@ -29,7 +29,7 @@ class Yellow implements TrafficLightState {
 
 	public next(tL: TrafficLight): void {
 		console.log('Yellow -> Red');
-		tl.setState(new Red(tl));
+		tL.setState(new Red(this.tL));
 	}
 	public getColor(): void {
 		console.log('Yellow');
@@ -45,7 +45,7 @@ class Green implements TrafficLightState {
 
 	public next(tL: TrafficLight): void {
 		console.log('Green -> Yellow');
-		tl.setState(new Yellow(tl));
+		tL.setState(new Yellow(this.tL));
 	}
 	public getColor(): void {
 		console.log('Green');
@@ -56,7 +56,7 @@ class TrafficLight {
 	public instance: TrafficLightState;
 
 	public constructor() {
-		this.instance = new Red(tl);
+		this.instance = new Red(tl1);
 	}
 
 	public setState(instance: TrafficLightState) {
@@ -74,14 +74,14 @@ class TrafficLight {
 
 //client code
 
-const tl = new TrafficLight();
-tl.getColor();
-tl.next();
-tl.getColor();
-tl.next();
-tl.getColor();
-tl.next();
-tl.getColor();
+const tl1 = new TrafficLight();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
 
 // here you have to form a cycle basically
 

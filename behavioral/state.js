@@ -6,7 +6,7 @@ var Red = /** @class */ (function () {
     }
     Red.prototype.next = function (tL) {
         console.log('Red -> Green');
-        tl.setState(new Green(tl));
+        tL.setState(new Green(this.tL));
     };
     Red.prototype.getColor = function () {
         console.log('Red');
@@ -19,7 +19,7 @@ var Yellow = /** @class */ (function () {
     }
     Yellow.prototype.next = function (tL) {
         console.log('Yellow -> Red');
-        tl.setState(new Red(tl));
+        tL.setState(new Red(this.tL));
     };
     Yellow.prototype.getColor = function () {
         console.log('Yellow');
@@ -32,7 +32,7 @@ var Green = /** @class */ (function () {
     }
     Green.prototype.next = function (tL) {
         console.log('Green -> Yellow');
-        tl.setState(new Yellow(tl));
+        tL.setState(new Yellow(this.tL));
     };
     Green.prototype.getColor = function () {
         console.log('Green');
@@ -41,7 +41,7 @@ var Green = /** @class */ (function () {
 }());
 var TrafficLight = /** @class */ (function () {
     function TrafficLight() {
-        this.instance = new Red(tl);
+        this.instance = new Red(tl1);
     }
     TrafficLight.prototype.setState = function (instance) {
         this.instance = instance;
@@ -55,14 +55,14 @@ var TrafficLight = /** @class */ (function () {
     return TrafficLight;
 }());
 //client code
-var tl = new TrafficLight();
-tl.getColor();
-tl.next();
-tl.getColor();
-tl.next();
-tl.getColor();
-tl.next();
-tl.getColor();
+var tl1 = new TrafficLight();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
+tl1.next();
+tl1.getColor();
 // here you have to form a cycle basically
 //and how would you do that or how would you pass in what to form a cycle
 // ✅ Definition:
