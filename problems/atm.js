@@ -66,7 +66,7 @@ var EnterPin = /** @class */ (function () {
     }
     EnterPin.prototype.next = function (atm) {
         console.log(' EnterPin -> Authenticate');
-        atm.setState(new Authenticate(this.atm));
+        atm.setState(new Authenticate(this.atm, this.atm.getCardObj()));
     };
     EnterPin.prototype.getState = function () {
         return this.state;
@@ -74,13 +74,14 @@ var EnterPin = /** @class */ (function () {
     return EnterPin;
 }());
 var Authenticate = /** @class */ (function () {
-    function Authenticate(atm) {
+    function Authenticate(atm, card) {
         this.atm = atm;
         this.state = ATMStates.AUTHENTICATE;
+        this.card = card;
     }
     Authenticate.prototype.next = function (atm) {
-        if (this.card.authenticate() === true) {
-            atm.setState(new EnterPin(this.atm));
+        if (this.atm.card.authenticate() === true) {
+            atm.setState(new Transaction(this.atm));
         }
         else {
             atm.setState(new Error1(this.atm));
@@ -100,10 +101,10 @@ var Transaction = /** @class */ (function () {
     }
     Transaction.prototype.next = function (atm) {
         if (this.choice == 'Withdraw') {
-            atm.setState(new WithDraw(this.atm));
+            atm.setState(new WithDraw(this.atm, this.atm.getAccnObj()));
         }
         else {
-            atm.setState(new Deposit(this.atm));
+            atm.setState(new Deposit(this.atm, this.atm.getAccnObj()));
         }
     };
     Transaction.prototype.getState = function () {
@@ -112,9 +113,10 @@ var Transaction = /** @class */ (function () {
     return Transaction;
 }());
 var Deposit = /** @class */ (function () {
-    function Deposit(atm) {
+    function Deposit(atm, account) {
         this.atm = atm;
         this.state = ATMStates.DEPOSIT;
+        this.account = account;
     }
     Deposit.prototype.next = function (atm) {
         this.account.depositCash(500);
@@ -126,9 +128,10 @@ var Deposit = /** @class */ (function () {
     return Deposit;
 }());
 var WithDraw = /** @class */ (function () {
-    function WithDraw(atm) {
+    function WithDraw(atm, account) {
         this.atm = atm;
         this.state = ATMStates.WITHDRAW;
+        this.account = account;
     }
     WithDraw.prototype.next = function (atm) {
         var bal = this.account.withdrawCash(200);
@@ -137,7 +140,7 @@ var WithDraw = /** @class */ (function () {
             this.state = ATMStates.ERROR;
         }
         else {
-            atm.setState(new Balance(this.atm));
+            atm.setState(new Balance(this.atm, this.atm.account));
         }
     };
     WithDraw.prototype.getState = function () {
@@ -146,12 +149,13 @@ var WithDraw = /** @class */ (function () {
     return WithDraw;
 }());
 var Balance = /** @class */ (function () {
-    function Balance(atm) {
+    function Balance(atm, account) {
         this.atm = atm;
         this.state = ATMStates.BALANCE;
+        this.account = account;
     }
     Balance.prototype.next = function (atm) {
-        this.account.getBalance();
+        console.log(this.account.getBalance());
         atm.setState(new Exit(this.atm));
     };
     Balance.prototype.getState = function () {
@@ -166,7 +170,7 @@ var CashDispensed = /** @class */ (function () {
     }
     CashDispensed.prototype.next = function (atm) {
         console.log('Cash Dispensed');
-        atm.setState(new Error1(this.atm));
+        atm.setState(new Exit(this.atm));
     };
     CashDispensed.prototype.getState = function () {
         return this.state;
@@ -200,8 +204,10 @@ var Exit = /** @class */ (function () {
     return Exit;
 }());
 var Atm = /** @class */ (function () {
-    function Atm() {
-        this.instance = new Ready(atm_obj);
+    function Atm(card, account) {
+        this.instance = new Ready(this);
+        this.card = card;
+        this.account = account;
     }
     Atm.prototype.setState = function (instance) {
         this.instance = instance;
@@ -210,21 +216,33 @@ var Atm = /** @class */ (function () {
         this.instance.next(this);
     };
     Atm.prototype.getState = function () {
-        this.instance.getState();
+        return this.instance.getState();
+    };
+    Atm.prototype.getCardObj = function () {
+        return this.card;
+    };
+    Atm.prototype.getAccnObj = function () {
+        return this.account;
     };
     return Atm;
 }());
-var atm_obj = new Atm();
 var card = new Card();
 var accn = new Account(600, 'abcd1234');
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
+var atm_obj = new Atm(card, accn);
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+while (true) {
+    atm_obj.next();
+    console.log(atm_obj.getState());
+}

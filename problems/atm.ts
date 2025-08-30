@@ -69,7 +69,7 @@ enum ATMStates {
 interface AtmStateInterface {
 	state: ATMStates;
 	next(atm: Atm): void;
-	getState();
+	getState(): ATMStates;
 }
 
 class Ready implements AtmStateInterface {
@@ -98,7 +98,7 @@ class EnterPin implements AtmStateInterface {
 	}
 	public next(atm: Atm): void {
 		console.log(' EnterPin -> Authenticate');
-		atm.setState(new Authenticate(this.atm));
+		atm.setState(new Authenticate(this.atm, this.atm.getCardObj()));
 	}
 	public getState() {
 		return this.state;
@@ -108,13 +108,14 @@ class Authenticate implements AtmStateInterface {
 	atm: Atm;
 	state: ATMStates;
 	card: CardInterface;
-	public constructor(atm: Atm) {
+	public constructor(atm: Atm, card: CardInterface) {
 		this.atm = atm;
 		this.state = ATMStates.AUTHENTICATE;
+		this.card = card;
 	}
 	public next(atm: Atm): void {
-		if (this.card.authenticate() === true) {
-			atm.setState(new EnterPin(this.atm));
+		if (this.atm.card.authenticate() === true) {
+			atm.setState(new Transaction(this.atm));
 		} else {
 			atm.setState(new Error1(this.atm));
 			this.state = ATMStates.ERROR;
@@ -134,9 +135,9 @@ class Transaction implements AtmStateInterface {
 	}
 	public next(atm: Atm): void {
 		if (this.choice == 'Withdraw') {
-			atm.setState(new WithDraw(this.atm));
+			atm.setState(new WithDraw(this.atm, this.atm.getAccnObj()));
 		} else {
-			atm.setState(new Deposit(this.atm));
+			atm.setState(new Deposit(this.atm, this.atm.getAccnObj()));
 		}
 	}
 	public getState() {
@@ -147,9 +148,11 @@ class Deposit implements AtmStateInterface {
 	atm: Atm;
 	account: AccountInterface;
 	state: ATMStates;
-	public constructor(atm: Atm) {
+
+	public constructor(atm: Atm, account: AccountInterface) {
 		this.atm = atm;
 		this.state = ATMStates.DEPOSIT;
+		this.account = account;
 	}
 	public next(atm: Atm): void {
 		this.account.depositCash(500);
@@ -163,9 +166,10 @@ class WithDraw implements AtmStateInterface {
 	atm: Atm;
 	account: AccountInterface;
 	state: ATMStates;
-	public constructor(atm: Atm) {
+	public constructor(atm: Atm, account: AccountInterface) {
 		this.atm = atm;
 		this.state = ATMStates.WITHDRAW;
+		this.account = account;
 	}
 	public next(atm: Atm): void {
 		let bal: number = this.account.withdrawCash(200);
@@ -173,7 +177,7 @@ class WithDraw implements AtmStateInterface {
 			atm.setState(new Error1(this.atm));
 			this.state = ATMStates.ERROR;
 		} else {
-			atm.setState(new Balance(this.atm));
+			atm.setState(new Balance(this.atm, this.atm.account));
 		}
 	}
 	public getState() {
@@ -184,12 +188,13 @@ class Balance implements AtmStateInterface {
 	atm: Atm;
 	state: ATMStates;
 	account: AccountInterface;
-	public constructor(atm: Atm) {
+	public constructor(atm: Atm, account: AccountInterface) {
 		this.atm = atm;
 		this.state = ATMStates.BALANCE;
+		this.account = account;
 	}
 	public next(atm: Atm): void {
-		this.account.getBalance();
+		console.log(this.account.getBalance());
 		atm.setState(new Exit(this.atm));
 	}
 	public getState() {
@@ -205,7 +210,7 @@ class CashDispensed implements AtmStateInterface {
 	}
 	public next(atm: Atm): void {
 		console.log('Cash Dispensed');
-		atm.setState(new Error1(this.atm));
+		atm.setState(new Exit(this.atm));
 	}
 	public getState() {
 		return this.state;
@@ -242,9 +247,13 @@ class Exit implements AtmStateInterface {
 
 class Atm {
 	public instance: AtmStateInterface;
+	card: CardInterface;
+	account: AccountInterface;
 
-	public constructor() {
-		this.instance = new Ready(atm_obj);
+	public constructor(card: CardInterface, account: AccountInterface) {
+		this.instance = new Ready(this);
+		this.card = card;
+		this.account = account;
 	}
 	public setState(instance: AtmStateInterface) {
 		this.instance = instance;
@@ -253,22 +262,35 @@ class Atm {
 		this.instance.next(this);
 	}
 	public getState() {
-		this.instance.getState();
+		return this.instance.getState();
+	}
+	public getCardObj() {
+		return this.card;
+	}
+	public getAccnObj() {
+		return this.account;
 	}
 }
 
-const atm_obj = new Atm();
 const card = new Card();
 const accn = new Account(600, 'abcd1234');
+const atm_obj = new Atm(card, accn);
 
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
-atm_obj.next();
-console.log(atm_obj.getState());
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+// atm_obj.next();
+// console.log(atm_obj.getState());
+
+while (true) {
+	atm_obj.next();
+	console.log(atm_obj.getState());
+}
