@@ -62,6 +62,12 @@ class Customer {
 			return false;
 		}
 	}
+	public getLatitude() {
+		return this.latitude;
+	}
+	public getLongitude() {
+		return this.longitude;
+	}
 }
 
 interface DistanceStrategy {
@@ -80,18 +86,28 @@ interface AmazonLockerInterface {
 }
 
 class AmazonLocker {
-	private constructor() {}
-
+	distance: number;
 	private static instance: AmazonLocker;
+	private constructor(distance: DistanceStrategy, customer: Customer) {
+		AmazonLocker.instance.distance = distance.getDistance(
+			customer.getLatitude(),
+			customer.getLongitude()
+		);
+	}
 
 	public static getInstance() {
 		if (!AmazonLocker.instance) {
-			AmazonLocker.instance = new AmazonLocker();
+			AmazonLocker.instance = new AmazonLocker(
+				new EuclideanDistance(),
+				new Customer(123, 3, 8)
+			);
 		}
 		return AmazonLocker.instance;
 	}
 
-	public findClosest() {}
+	public findClosest() {
+		closestLocation: 
+	}
 }
 
 const locker = AmazonLocker.getInstance();

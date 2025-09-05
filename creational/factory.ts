@@ -4,7 +4,7 @@ abstract class VehicleFunctions {
 }
 
 class Car extends VehicleFunctions {
-	public override start() {
+	public start() {
 		console.log('Car starting');
 	}
 	public override stop() {
@@ -13,7 +13,7 @@ class Car extends VehicleFunctions {
 }
 
 class Truck extends VehicleFunctions {
-	public override start() {
+	public start() {
 		console.log('Truck starting');
 	}
 	public override stop() {
@@ -22,10 +22,10 @@ class Truck extends VehicleFunctions {
 }
 
 class Bike extends VehicleFunctions {
-	public override start() {
+	public start() {
 		console.log('Bike starting');
 	}
-	public override stop() {
+	public stop() {
 		console.log('Bike stopping');
 	}
 }

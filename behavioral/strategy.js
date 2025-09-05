@@ -1,26 +1,26 @@
-var CreditCard = /** @class */ (function () {
-    function CreditCard() {
+var CreditCard1 = /** @class */ (function () {
+    function CreditCard1() {
     }
-    CreditCard.prototype.processPayment = function () {
+    CreditCard1.prototype.processPayment = function () {
         console.log('Credit card payment processing');
     };
-    return CreditCard;
+    return CreditCard1;
 }());
-var Cash = /** @class */ (function () {
-    function Cash() {
+var Cash1 = /** @class */ (function () {
+    function Cash1() {
     }
-    Cash.prototype.processPayment = function () {
+    Cash1.prototype.processPayment = function () {
         console.log('Cash payment processing');
     };
-    return Cash;
+    return Cash1;
 }());
-var ApplePay = /** @class */ (function () {
-    function ApplePay() {
+var ApplePay1 = /** @class */ (function () {
+    function ApplePay1() {
     }
-    ApplePay.prototype.processPayment = function () {
+    ApplePay1.prototype.processPayment = function () {
         console.log('Apple Pay payment processing');
     };
-    return ApplePay;
+    return ApplePay1;
 }());
 var PaymentProcesser = /** @class */ (function () {
     function PaymentProcesser(payment) {
@@ -35,19 +35,19 @@ var PaymentProcesser = /** @class */ (function () {
     return PaymentProcesser;
 }());
 // client code
-var pay = new PaymentProcesser(new CreditCard());
+var pay = new PaymentProcesser(new CreditCard1());
 pay.processPayment();
-var pay1 = new PaymentProcesser(new ApplePay());
+var pay1 = new PaymentProcesser(new ApplePay1());
 pay1.processPayment();
-pay1.setPayment(new Cash());
+pay1.setPayment(new Cash1());
 pay1.processPayment();
 // from what i understood
 // in PaymentProcessor class, you are referencing interface Payment
-// that means, the memory of interface is now in PaymentProcessor class
+// that means, the reference of interface is now in PaymentProcessor class
 // you need to access it
 // now, whenever you call an object of PaymentProcessor class
 // and assign it another object, let's say CreditCard class's object
-// now in constructor, that interface's memory => CreditCard's object
+// now in constructor, that interface's reference => CreditCard's object
 // and when you call processPayment, it obviously accesses interface's declared function
 // where CreditCard's object resides now, that is why it calls CreditCard class and outputs the console log there
 // real stuff :BOOM

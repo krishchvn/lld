@@ -96,7 +96,7 @@ class Borrower {
 		);
 	}
 }
-
+// singleton
 class AllCars {
 	public carsList: CarProperties[] = [];
 	public static allCars: AllCars;
@@ -118,6 +118,7 @@ class AllCars {
 	}
 }
 
+// strategy
 interface Price {
 	getBasePrice(): number;
 }

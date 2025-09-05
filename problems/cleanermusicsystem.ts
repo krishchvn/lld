@@ -146,7 +146,7 @@ class Loop extends ModeInterface {
 	}
 }
 
-class Sequential implements ModeInterface {
+class Sequential extends ModeInterface {
 	public getNextSongIndex(songs: Song[], currentIndex: number): number {
 		if (songs.length === 0) {
 			return -1;
@@ -162,7 +162,7 @@ class Sequential implements ModeInterface {
 	}
 }
 
-class Shuffled implements ModeInterface {
+class Shuffled extends ModeInterface {
 	public getNextSongIndex(songs: Song[], currentIndex: number): number {
 		return Math.floor(Math.random() * songs.length);
 	}

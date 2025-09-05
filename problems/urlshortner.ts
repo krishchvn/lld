@@ -79,8 +79,9 @@ class Url {
 }
 
 // client code
-const prompt2 = require('prompt-sync')();
+
 while (true) {
+	const prompt2 = require('prompt-sync')();
 	let user_prompt: string = prompt2('Insert url');
 	const user = new InteractWithUser(user_prompt);
 	const user_input = user.userInput();
